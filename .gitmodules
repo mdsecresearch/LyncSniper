@@ -1,0 +1,3 @@
+[submodule "Tunable-SSL-Validator"]
+	path = Tunable-SSL-Validator
+	url = https://github.com/Jaykul/Tunable-SSL-Validator

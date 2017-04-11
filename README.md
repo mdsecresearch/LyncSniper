@@ -7,4 +7,4 @@ For more information on LyncSniper, check out this blog post.
 
 At present, LyncSniper allows password spraying and bruteforcing of Lync and Skype for Business deployments.
 
-LyncSniper was developed by @domchell of the MDSec ActiveBreach team.
+LyncSniper was developed by [@domchell](https://twitter.com/domchell) of the [MDSec ActiveBreach team](https://www.mdsec.co.uk/services/red-teaming/).

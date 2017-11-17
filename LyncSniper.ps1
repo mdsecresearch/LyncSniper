@@ -49,6 +49,8 @@ function Invoke-GetAutoDiscoverURL
     $Username = ""
   )
   try{
+    $AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
+    [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
     $domain = $Username.split("@")[1]
     $lyncurl = "https://lyncdiscover.$($domain)"
     write-host "[*] Using autodiscover URL of $($lyncurl)"
@@ -125,6 +127,8 @@ function Invoke-LyncSpray
   {
     write-host "[*] Retrieving S4B AutoDiscover Information"
     try{
+      $AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
+      [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
       $data = Invoke-WebRequest -Insecure -Uri $AutoDiscoverURL -Method GET -ContentType "application/json" -UseBasicParsing
       if(($data.content | ConvertFrom-JSON)._links.redirect)
       {
@@ -249,6 +253,8 @@ function Invoke-LyncBrute
   {
     write-host "[*] Retrieving S4B AutoDiscover Information"
     try{
+      $AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
+      [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
       $data = Invoke-WebRequest -Insecure -Uri $AutoDiscoverURL -Method GET -ContentType "application/json" -UseBasicParsing
       if(($data.content | ConvertFrom-JSON)._links.redirect)
       {
@@ -386,6 +392,8 @@ function Invoke-Authenticate
 
   try{
     $postParams = @{grant_type="password";username=$Username;password=$Password}
+    $AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
+    [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
     $data = Invoke-WebRequest -Uri "$baseurl/WebTicket/oauthtoken" -Method POST -Body $postParams -UseBasicParsing
     $authcwt = ($data.content | ConvertFrom-JSON).access_token
   }catch [Exception]{

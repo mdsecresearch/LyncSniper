@@ -392,7 +392,7 @@ function Invoke-Authenticate
     $data = Invoke-WebRequest -Uri "$baseurl/WebTicket/oauthtoken" -Method POST -Body $postParams -UseBasicParsing
     $authcwt = ($data.content | ConvertFrom-JSON).access_token
   }catch [Exception]{
-    Write-Verbose "[*] Invalid credentials: $($Username):$($Password)   (" + $_.Exception.GetType().FullName + " - " + $_.Exception.Message + ")"
+    Write-Verbose "[*] Invalid credentials: $($Username):$($Password)   ($($_.Exception.GetType().FullName) - $($_.Exception.Message))"
     return
   }
   write-host -foreground "green" "[*] Found credentials: $($Username):$($Password)"

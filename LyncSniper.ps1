@@ -489,13 +489,21 @@ function Invoke-AuthenticateO365
       $response.Dispose()
     }
     $BinarySecurityToken = $data.Envelope.Body.RequestSecurityTokenResponse.RequestedSecurityToken.BinarySecurityToken.InnerText
-    if($BinarySecurityToken)
+    if ($data.OuterXml.Contains("you must use multi-factor"))
+    {
+      write-host -ForegroundColor "green" "[*] Found Credentials: $($Username):$($Password) However, MFA is required."
+    }
+    elseif($data.OuterXml.Contains("Error validating credentials"))
+    {
+        Write-Verbose "[*] Invalid credentials: $($Username):$($Password)"
+    }
+    ElseIf($BinarySecurityToken)
     {
       write-host -foreground "green" "[*] Found credentials: $($Username):$($Password)"
     }
     else
     {
-      Write-Verbose "[*] Invalid credentials: $($Username):$($Password)"
+      Write-Verbose "[*] Authentication failed: $($Username):$($Password). Username does not exist."
     }
 
   } catch {

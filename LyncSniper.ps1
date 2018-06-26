@@ -111,7 +111,11 @@ function Invoke-LyncSpray
 
     [Parameter(Position = 3, Mandatory = $False)]
     [string]
-    $AutoDiscoverURL = ""
+    $AutoDiscoverURL = "",
+
+    [Parameter(Position = 4, Mandatory = $False)]
+    [int]
+    $Delay = 0
   )
 
   $Usernames = Get-Content $UserList
@@ -178,6 +182,10 @@ function Invoke-LyncSpray
     else
     {
       $result = Invoke-Authenticate -Username $Username -Password $Password -baseurl $baseurl
+    }
+    if ($Delay -gt 0)
+    {
+        Start-Sleep -Milliseconds $Delay
     }
   }
 }

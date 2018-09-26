@@ -194,7 +194,7 @@ function Invoke-LyncSpray
     OutputDir = Split-Path $Usernames
     OutputFile = [System.IO.Path]::GetFileNameWithoutExtension($Usernames)
     OutputFullPath = "${OutputDir}\${OutputFile}_clean.txt"
-    Write-Verbose "[*] Saving valid usernames to $OutputFullPath."
+    Write-Host "[*] Saving valid usernames to $OutputFullPath."
     $ValidUsernames = $Usernames | Where {$InvalidUsernames -NotContains $_} > $OutputFullPath
   }
 }

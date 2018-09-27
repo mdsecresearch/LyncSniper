@@ -191,9 +191,9 @@ function Invoke-LyncSpray
   }
   if($Office365)
   {
-    OutputDir = Split-Path $Usernames
-    OutputFile = [System.IO.Path]::GetFileNameWithoutExtension($Usernames)
-    OutputFullPath = "${OutputDir}\${OutputFile}_clean.txt"
+    $OutputDir = Split-Path $UserList
+    $OutputFile = [System.IO.Path]::GetFileNameWithoutExtension($UserList)
+    $OutputFullPath = "${OutputDir}\${OutputFile}_validusers.txt"
     Write-Host "[*] Saving valid usernames to $OutputFullPath."
     $ValidUsernames = $Usernames | Where {$InvalidUsernames -NotContains $_} > $OutputFullPath
   }

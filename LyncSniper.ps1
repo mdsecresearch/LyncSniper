@@ -189,12 +189,12 @@ function Invoke-LyncSpray
         Start-Sleep -Milliseconds $Delay
     }
   }
-  if($Office365)
+  if($Office365 -And ($InvalidUsernames.Count -gt 0))
   {
     $OutputDir = Split-Path $UserList
     $OutputFile = [System.IO.Path]::GetFileNameWithoutExtension($UserList)
     $OutputFullPath = "${OutputDir}\${OutputFile}_validusers.txt"
-    Write-Host "[*] Saving valid usernames to $OutputFullPath."
+    Write-Host -Foreground Yellow "[*] Saving valid usernames to $OutputFullPath."
     $ValidUsernames = $Usernames | Where {$InvalidUsernames -NotContains $_} > $OutputFullPath
   }
 }

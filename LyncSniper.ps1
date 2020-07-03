@@ -441,6 +441,7 @@ function Invoke-AuthenticateO365
 
   try
   {
+    $EncodedPassword = [System.Web.HttpUtility]::HtmlEncode($Password)
     $soap = @"
 <?xml version="1.0" encoding="UTF-8"?>
 <S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wst="http://schemas.xmlsoap.org/ws/2005/02/trust">
@@ -454,7 +455,7 @@ function Invoke-AuthenticateO365
     <wsse:Security>
     <wsse:UsernameToken wsu:Id="user">
         <wsse:Username>$($Username)</wsse:Username>
-        <wsse:Password>$($Password)</wsse:Password>
+        <wsse:Password>$($EncodedPassword)</wsse:Password>
     </wsse:UsernameToken>
     <wsu:Timestamp Id="Timestamp">
         <wsu:Created>$(([DateTime]::UtcNow.ToString("o")))</wsu:Created>
